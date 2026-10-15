@@ -33,3 +33,16 @@ test_that("vectorised output has one row per input and fixed columns", {
   expect_identical(nrow(r), 3L)
   expect_identical(validate_dtc(character())$valid, logical())
 })
+
+test_that("trailing placeholders fail bad_format", {
+  expect_dtc("2024--", FALSE, N, "bad_format")
+  expect_dtc("2024-02-15T-", FALSE, N, "bad_format")
+  expect_dtc("2024-02-15T14:-", FALSE, N, "bad_format")
+})
+test_that("trailing newline, CRLF and tab fail bad_format", {
+  expect_dtc("2024-02-15T14:30\n", FALSE, N, "bad_format")
+  expect_dtc("2024-02-15T14:30\r\n", FALSE, N, "bad_format")
+  expect_dtc("2024-02-15T14:30\t", FALSE, N, "bad_format")
+})
+test_that("day placeholder directly before a time fails bad_format",
+          expect_dtc("2024---T14", FALSE, N, "bad_format"))

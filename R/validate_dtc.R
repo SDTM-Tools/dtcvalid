@@ -43,7 +43,7 @@ dtc_re <- paste0(
   "(?:-([0-9]{2}|-)",
   "(?:T([0-9]{2}|-)",
   "(?::([0-9]{2}|-)",
-  "(?::([0-9]{2}|-))?)?)?)?)?$"
+  "(?::([0-9]{2}|-))?)?)?)?)?\\z"
 )
 
 is_unsupported <- function(v) {
@@ -65,6 +65,10 @@ check_one <- function(v) {
   # a placeholder hyphen must sit between present components
   last <- max(which(present))
   if (any(parts[seq_len(last)] == "")) return(fail("bad_format"))
+  # no placeholder after the last real component
+  if (any(parts[-seq_len(last)] == "-")) return(fail("bad_format"))
+  # a day placeholder cannot be followed directly by a time
+  if (parts[["day"]] == "-" && parts[["hour"]] != "") return(fail("bad_format"))
 
   yr <- as.integer(parts[["year"]])
   if (present[["month"]]) {

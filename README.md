@@ -42,6 +42,6 @@ Base R only. If tibble is installed, results are returned as tibbles; otherwise 
 
 ## Tested with
 
-R 4.5.0, testthat 3.3.2, roxygen2 8.1.1, tibble 3.3.1. `R CMD check --no-manual` status OK; 25 tests, 72 expectations, 0 failures.
+R 4.5.0, testthat 3.3.2, roxygen2 8.1.1, tibble 3.3.1. `R CMD check --no-manual` status OK; 28 tests, 93 expectations, 0 failures.
 
 All test data is synthetic.
