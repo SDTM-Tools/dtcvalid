@@ -1,0 +1,35 @@
+expect_dtc <- function(value, valid, precision, reason) {
+  r <- validate_dtc(value)
+  expect_identical(r$valid, valid)
+  expect_identical(r$precision, precision)
+  expect_identical(r$reason, reason)
+}
+N <- NA_character_
+
+test_that("2024 is valid, year", expect_dtc("2024", TRUE, "year", N))
+test_that("2024-02 is valid, month", expect_dtc("2024-02", TRUE, "month", N))
+test_that("2024-02-29 is valid, day", expect_dtc("2024-02-29", TRUE, "day", N))
+test_that("2023-02-29 fails not_leap_year", expect_dtc("2023-02-29", FALSE, N, "not_leap_year"))
+test_that("2024-02-30 fails bad_day", expect_dtc("2024-02-30", FALSE, N, "bad_day"))
+test_that("2024-13-01 fails bad_month", expect_dtc("2024-13-01", FALSE, N, "bad_month"))
+test_that("2024---15 is valid, day", expect_dtc("2024---15", TRUE, "day", N))
+test_that("2024/02/15 fails bad_format", expect_dtc("2024/02/15", FALSE, N, "bad_format"))
+test_that("2024-02-15T14 is valid, hour", expect_dtc("2024-02-15T14", TRUE, "hour", N))
+test_that("2024-02-15T14:30 is valid, minute", expect_dtc("2024-02-15T14:30", TRUE, "minute", N))
+test_that("2024-02-15T14:30:59 is valid, second", expect_dtc("2024-02-15T14:30:59", TRUE, "second", N))
+test_that("2024-02-15T24:00 fails bad_time", expect_dtc("2024-02-15T24:00", FALSE, N, "bad_time"))
+test_that("2024-02-15T14:60 fails bad_time", expect_dtc("2024-02-15T14:60", FALSE, N, "bad_time"))
+test_that("2024-02-15T-:30 is valid, minute", expect_dtc("2024-02-15T-:30", TRUE, "minute", N))
+test_that("time zone is unsupported", expect_dtc("2024-02-15T14:30+02:00", FALSE, N, "unsupported"))
+test_that("P3D is unsupported", expect_dtc("P3D", FALSE, N, "unsupported"))
+test_that("empty string is valid, NA precision", expect_dtc("", TRUE, N, N))
+test_that("NA is valid, NA precision", expect_dtc(NA_character_, TRUE, N, N))
+test_that("leading space fails bad_format", expect_dtc(" 2024-02-15", FALSE, N, "bad_format"))
+test_that("two-digit year fails bad_format", expect_dtc("24-02-15", FALSE, N, "bad_format"))
+
+test_that("vectorised output has one row per input and fixed columns", {
+  r <- validate_dtc(c("2024", "bad", NA))
+  expect_identical(names(r), c("value", "valid", "precision", "reason"))
+  expect_identical(nrow(r), 3L)
+  expect_identical(validate_dtc(character())$valid, logical())
+})

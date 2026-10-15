@@ -1,0 +1,13 @@
+Package: dtcvalid
+Title: Validate SDTM --DTC Values Against ISO 8601
+Version: 0.1.0
+Authors@R: person("Drikus", "Raath", role = c("aut", "cre"), email = "drikusraath@gmail.com")
+Description: Checks SDTM --DTC character values against the ISO 8601 subset
+    described in SDTMIG v3.4 section 4.4 and reports a reason for each value
+    that fails. Imputation is out of scope.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+Suggests: testthat (>= 3.0.0), tibble
+Config/testthat/edition: 3
+Config/roxygen2/version: 8.1.1
